@@ -7,6 +7,7 @@ import sys
 import time
 import fcntl
 import base64
+import signal
 import random
 import string
 import threading
@@ -145,11 +146,47 @@ def setup_tty(nc_command):
         sys.exit(0)
 
 
-def main():
-    nc_params = ''
+def panic_handler(signum, frame):
+    global last, panic_count
 
-    if len(sys.argv) > 1:
-        nc_params = ' '.join(sys.argv[1:])
+    now = time.time()
+
+    if now - last < 1:
+        panic_count += 1
+    else:
+        panic_count = 0
+
+    last = now
+
+    if panic_count >= 20:
+        print('\n\n[+] Panic detected! Exiting...\n\n')
+        sys.exit(1)
+
+
+def validate_params(args):
+    valid_chars = '-lnvpsu ' + string.digits
+    for i in args:
+        if i not in valid_chars:
+            return False
+
+    return True
+
+
+def main():
+    global last, panic_count
+    last = time.time()
+    panic_count = 0
+    signal.signal(signal.SIGINT, panic_handler)
+
+    if len(sys.argv) <= 1:
+        print('[-] Too few arguments!')
+        sys.exit(1)
+
+    nc_params = ' '.join(sys.argv[1:])
+
+    if not validate_params(nc_params):
+        print('[-] Invalid arguments. This may be buggy. Exiting.')
+        sys.exit(1)
 
     nc_command = 'nc ' + nc_params
 
