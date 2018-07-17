@@ -37,4 +37,4 @@ ln -s ~/Tools/snc/snc ~/.local/bin/snc
 ```
 
 #### DEMO
-![Demo](https://github.com/{user}/{repo}/raw/master/static/demo.gif)
+![Demo](https://github.com/viniciusmarangoni/snc/raw/master/static/demo.gif)
