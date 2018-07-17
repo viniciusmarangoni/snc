@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2
 # -*- coding: utf-8 -*-
 
 import os
@@ -29,8 +29,7 @@ def upload_home(p, my_tar_home):
 
     contents_encoded = base64.b64encode(contents)
 
-    p.stdin.write('echo {0} | python2 -c "import base64; open(\'home.tar\', \'w\').write(base64.b64decode(raw_input()))"\n'
-                  .format(contents_encoded))
+    p.stdin.write('echo {0} | base64 -d > home.tar\n'.format(contents_encoded))
 
     p.stdin.flush()
 
@@ -60,7 +59,9 @@ def setup_home(p, my_home):
         upload_home(p, my_tar_home)
         os.system('rm {0}'.format(my_tar_home))
 
-    p.stdin.write('export PS1="\[$(tput setaf 1)\]┌─╼\[$(tput setaf 5)\] \u@\h \[$(tput setaf 7)\][\w]\n\[$(tput setaf 1)\]\[$(tput setaf 1)\]└╼ \[$(tput setaf 7)\][rev_shell]\[$(tput setaf 7)\] "\n')
+    p.stdin.write('export PS1="\[$(tput setaf 1)\]┌─╼\[$(tput setaf 5)\] \u@\h \[$(tput setaf 7)\][\w]\n\[$(tput '
+                  'setaf 1)\]\[$(tput setaf 1)\]└╼ \[$(tput setaf 7)\][rev_shell]\[$(tput setaf 7)\] "\n')
+
     p.stdin.flush()
 
 
@@ -133,7 +134,7 @@ def setup_tty(nc_command):
 
         flag.set()
 
-    except Exception, e:
+    except Exception as e:
         print('[-] Unexpected error: {0}'.format(e))
 
     finally:

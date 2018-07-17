@@ -1,0 +1,14 @@
+#!/bin/sh
+
+SCRIPT=$(readlink -f "$0")
+BASEDIR=$(dirname "$SCRIPT")
+
+if [ -x /usr/bin/python2 ]
+then
+    /usr/bin/python2 "$BASEDIR/snc.py" "$@"
+elif [ -x /usr/bin/python2.7 ]
+then
+    /usr/bin/python2.7 "$BASEDIR/snc.py" "$@"
+else
+    echo "[-] Couldn't find Python 2.7"
+fi
